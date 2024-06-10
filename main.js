@@ -1,29 +1,20 @@
 const fs = require("fs");
-const readline = require("readline");
+const path = require("path");
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// Get command line arguments
+const filename = process.argv[2];
+const wordToRemove = process.argv[3];
 
-rl.question("Enter the filename: ", (filename) => {
-  rl.question("Enter the word to remove: ", (word) => {
-    // TODO: Implement this function
-    fs.readFile(filename, "utf-8", (err, data) => {
-      if (err) {
-        console.log(err);
-        return;
-      } else if (data) {
-        const modifiedData = data.replace(new RegExp(word, "g"), "");
-        fs.writeFile(filename, modifiedData, (err) => {
-          if (err) {
-            console.log(err);
-            return;
-          }
-          console.log("Success");
-        });
-      }
-    });
-    rl.close();
+// Read the file
+fs.readFile(path.join(__dirname, filename), "utf8", function (err, data) {
+  if (err) throw err;
+
+  // Replace all occurrences of the word
+  const result = data.replace(new RegExp(wordToRemove, "g"), "");
+
+  // Write the result back to the file
+  fs.writeFile(path.join(__dirname, filename), result, "utf8", function (err) {
+    if (err) throw err;
+    console.log(`Removed ${wordToRemove} from ${filename}`);
   });
 });
